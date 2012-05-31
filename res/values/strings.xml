@@ -1,3 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MyGPSApplication</string>
+    <string name="startButton">Start</string>
+    <string name="mapView">mapView</string>
 </resources>

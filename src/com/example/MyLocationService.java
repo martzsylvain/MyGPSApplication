@@ -1,5 +1,14 @@
 package com.example;
 
+/**
+ * Created with IntelliJ IDEA.
+ * User: kiki
+ * Date: 31/05/12
+ * Time: 17:39
+ * To change this template use File | Settings | File Templates.
+ */
+
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -34,20 +43,18 @@ public class MyLocationService extends Service implements LocationListener {
             mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         criteria.setAccuracy(200);
-        mLocationManager.getBestProvider(criteria,true);
+        mLocationManager.getBestProvider(criteria, true);
 
         if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
             Log.v("Test GPS", "GPS disabled");
         else
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 35, this);
-
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();    //To change body of overridden methods use File | Settings | File Templates.
-        if(mLocationManager != null && mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-        {
+        if (mLocationManager != null && mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             mLocationManager.removeUpdates(this);
             mLocationManager = null;
         }
@@ -61,11 +68,10 @@ public class MyLocationService extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         Double longitude;
         Double latitude;
-        if(location != null)
-        {
+        if (location != null) {
             longitude = location.getLongitude();
             latitude = location.getLatitude();
-            Log.v("OnLocationChange test", "longitude : "+ longitude + " latitude : " + latitude);
+            Log.v("OnLocationChange test", "longitude : " + longitude + " latitude : " + latitude);
         }
     }
 
