@@ -10,6 +10,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * Created with IntelliJ IDEA.
@@ -70,16 +71,16 @@ public class MyLocationService extends Service implements LocationListener {
 
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        Toast.makeText(MyLocationService.this, "Status changed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onProviderEnabled(String s) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        Toast.makeText(MyLocationService.this, "GPS Turned on", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onProviderDisabled(String s) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        Toast.makeText(MyLocationService.this, "GPS Turned off", Toast.LENGTH_SHORT).show();
     }
 }
