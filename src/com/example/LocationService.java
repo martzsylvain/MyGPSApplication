@@ -1,14 +1,5 @@
 package com.example;
 
-/**
- * Created with IntelliJ IDEA.
- * User: kiki
- * Date: 31/05/12
- * Time: 17:39
- * To change this template use File | Settings | File Templates.
- */
-
-
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -28,7 +19,12 @@ import android.widget.Toast;
  * Time: 11:01
  * To change this template use File | Settings | File Templates.
  */
-public class MyLocationService extends Service implements LocationListener {
+public class LocationService extends Service implements LocationListener {
+
+    public static final String LOCATION_KEY = "myKey";
+    public static final String LOCATION_KEY_LAT = LOCATION_KEY + ".lat";
+    public static final String LOCATION_KEY_LNG = LOCATION_KEY + ".lng";
+
     private LocationManager mLocationManager;
 
     @Override
@@ -43,10 +39,10 @@ public class MyLocationService extends Service implements LocationListener {
             mLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Criteria criteria = new Criteria();
         criteria.setAccuracy(200);
-        mLocationManager.getBestProvider(criteria, true);
+        mLocationManager.getProviders(criteria, true);
 
         if (!mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-            Log.v("Test GPS", "GPS disabled");
+            Log.v("GPSStatus", "GPS disabled");
         else
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 35, this);
     }
@@ -66,27 +62,26 @@ public class MyLocationService extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        Double longitude;
-        Double latitude;
         if (location != null) {
-            longitude = location.getLongitude();
-            latitude = location.getLatitude();
-            Log.v("OnLocationChange test", "longitude : " + longitude + " latitude : " + latitude);
+            Intent intent = new Intent(LOCATION_KEY);
+            intent.putExtra(LOCATION_KEY_LNG, location.getLongitude());
+            intent.putExtra(LOCATION_KEY_LAT, location.getLatitude());
+            sendBroadcast(intent);
         }
     }
 
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
-        Toast.makeText(MyLocationService.this, "Status changed", Toast.LENGTH_SHORT).show();
+        Toast.makeText(LocationService.this, "Status changed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onProviderEnabled(String s) {
-        Toast.makeText(MyLocationService.this, "GPS Turned on", Toast.LENGTH_SHORT).show();
+        Toast.makeText(LocationService.this, "GPS Turned on", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onProviderDisabled(String s) {
-        Toast.makeText(MyLocationService.this, "GPS Turned off", Toast.LENGTH_SHORT).show();
+        Toast.makeText(LocationService.this, "GPS Turned off", Toast.LENGTH_SHORT).show();
     }
 }

@@ -3,4 +3,5 @@
     <string name="app_name">MyGPSApplication</string>
     <string name="startButton">Start</string>
     <string name="mapView">mapView</string>
+    <string name="quitButton">Quit</string>
 </resources>
