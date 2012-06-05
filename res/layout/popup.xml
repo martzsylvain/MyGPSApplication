@@ -17,6 +17,12 @@
               android:textSize="15sp"
               android:textColor="#00FF00"/>
 
+    <TextView android:id="@+id/coordinate"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:textSize="15sp"
+              android:textColor="#00FF00"/>
+
     <Button android:id="@+id/remove"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

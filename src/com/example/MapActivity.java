@@ -7,6 +7,8 @@ import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
@@ -25,7 +27,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private MyLocationOverlay mMyLocation = null;
     private Intent mIntentForLocationService = null;
     private Pushpin mPushpin;
-
 
     /*
     * Mes lignes
@@ -56,9 +57,20 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         /* initialisation de l'image pour les pushpins */
         Drawable marker = getResources().getDrawable(R.drawable.pushpin);
         marker.setBounds(0, -marker.getIntrinsicHeight() / 4, marker.getIntrinsicWidth() / 4, 0);
-        mPushpin = new Pushpin(marker);
+        mPushpin = new Pushpin(marker, mMapView, this);
 
+        GeoPoint point = new GeoPoint(44830552, -580902);
+        mPushpin.addItem(point, "Laissez les bon temps rouler!", "I'm in Louisiana!");
         mMapView.getOverlays().add(mPushpin);
+
+        mMapView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View arg0, MotionEvent arg1) {
+                GeoPoint point = new GeoPoint(45830552, -590902);
+                mPushpin.addItem(point, "trololo", "I'm in trololo!");
+                return false;
+            }
+        });
     }
 
     @Override

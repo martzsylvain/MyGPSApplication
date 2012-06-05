@@ -1,11 +1,15 @@
 package com.example;
 
+import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.ItemizedOverlay;
-import com.google.android.maps.MapView;
-import com.google.android.maps.OverlayItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import com.google.android.maps.*;
 
 import java.util.ArrayList;
 
@@ -18,12 +22,15 @@ import java.util.ArrayList;
  */
 public class Pushpin extends ItemizedOverlay<OverlayItem> {
     private ArrayList<OverlayItem> mOverlayItemList;
+    private MapView mMapView;
+    private LinearLayout mPopup;
+    private Context mContext;
 
-    public Pushpin(Drawable drawable) {
+    public Pushpin(Drawable drawable, MapView view, Context context) {
         super(drawable);
         mOverlayItemList = new ArrayList<OverlayItem>();
-
-        populate();
+        mMapView = view;
+        mContext = context;
     }
 
     public void addItem(GeoPoint p, String title, String snippet) {
@@ -48,14 +55,57 @@ public class Pushpin extends ItemizedOverlay<OverlayItem> {
     }
 
     @Override
-    public boolean onTap(GeoPoint p, MapView mapView) {
-//        String title = "pt:" + String.valueOf(mOverlayItemList.size() + 1);
-//        String snippet = "geo:\n"
-//                + String.valueOf(p.getLatitudeE6()) + "\n"
-//                + String.valueOf(p.getLongitudeE6());
+    protected boolean onTap(int i) {
 
-//        addItem(p, title, snippet);
+        if (mOverlayItemList != null && !mOverlayItemList.isEmpty()) {
 
-        return true;
+            /* Recuperation des information de mon pin ( title, details & GeoPoint ) */
+            OverlayItem item = mOverlayItemList.get(i);
+            String title = item.getTitle();
+            String details = item.getSnippet();
+            GeoPoint point = item.getPoint();
+
+            /**********************************************************************************************************/
+
+            /* Instantiation & Initialisation de ma vue (popup) sur le context de la map */
+            if (mPopup == null)
+            {
+                mPopup = (LinearLayout) ((MapActivity) mContext).getLayoutInflater().inflate(R.layout.popup, null);
+                mPopup.setBackgroundResource(android.R.color.black);
+            }
+
+            mPopup.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            /* set information on popup layout */
+            ((TextView) mPopup.findViewById(R.id.title)).setText(title);
+            ((TextView) mPopup.findViewById(R.id.details)).setText(details);
+            ((TextView) mPopup.findViewById(R.id.coordinate)).setText("\nLatitude : " + point.getLatitudeE6() / 1E6 + "\nLongitude : "+ point.getLongitudeE6() / 1E6);
+            ((Button) mPopup.findViewById(R.id.remove)).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
+
+            /**********************************************************************************************************/
+
+            /* set popup coord on mapView*/
+            Projection projection = mMapView.getProjection();
+            Point pointMap = new Point();
+            projection.toPixels(point, pointMap);
+
+            int x = (int) (mPopup.getWidth());
+            int y = (int) (-35);
+
+            MapView.LayoutParams lp = new MapView.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT, point, x, y, MapView.LayoutParams.CENTER);
+
+            mMapView.removeView(mPopup);
+
+            mMapView.addView(mPopup, lp);
+            mMapView.invalidate();
+
+        }
+        return super.onTap(i);
     }
 }
